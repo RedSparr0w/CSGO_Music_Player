@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>AudioPlayer</title>
+    <meta charset="utf-8">
+    <link href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+  </head>
+  <div class="player-bar">
+    <div class="player-bar-progress-wrapper" id="progress_wrap"><div class="player-bar-progress-meter" id="progress"></div></div>
+    <div class="player-bar-info" id="player_info">
+      <img class="player-bar-info-img">
+      <div class="player-bar-info-top"></div>
+      <div class="player-bar-info-bottom"></div>
+    </div>
+    <div class="player-bar-controls">
+      <div class="player-bar-volume-wrapper" id="volume_wrap">
+        <div class="player-bar-volume-meter" id="volume_meter"></div>
+      </div>
+      <button class="player-bar-button" onclick="javascript:queuePrev()"><span class="icon ion-skip-backward"></span></button>
+      <button class="player-bar-button" onclick="javascript:queueToggle()"><span class="icon ion-play" id="button_status"></span></button>
+      <button class="player-bar-button" onclick="javascript:queueNext()"><span class="icon ion-skip-forward"></span></button>
+    </div>
+  </div>
+
+  <audio preload="none" id="player"><source src="blank" type="audio/mp3"></audio>
+  <input type="file" id="selector" style="display:none">
+  <a href="javascript:askDeleteQueue()"><span class="icon ion-eject"></span></a>
+  <button onclick="javascript:selector.click()"><span class="icon ion-plus-circled"></span></button>
+  <input type="checkbox" name="dummy" id="checkbox_ingame"><label for="dummy">Ingame</label>
+  <div id="queue"></div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="id3.js"></script>
+  <script>
+    'use strict';
+
+    var jsmediatags = window.jsmediatags;
+
+    var queue = [];
+    var index = 0;
+
+    var player = $('#player')[0];
+    var source = $('#player > source')[0];
+    var queueDiv = $('#queue')[0];
+    var selector = $('#selector')[0];
+    var info = $('#player_info')[0];
+    var progressbar = $('#progress')[0];
+    var progresswrap = $('#progress_wrap')[0];
+    var statusbutton = $('#button_status')[0];
+    var ingame = $('#checkbox_ingame')[0];
+    var volumemeter = $('#volume_meter')[0];
+
+    $(document).ready(function () {
+      queueDisplay();
+
+      if (window.localStorage.volume) player.volume = window.localStorage.volume;
+      /*if (window.localStorage.playlist) queue = JSON.parse(window.localStorage.playlist);
+      if (window.localStorage.index) index = window.localStorage.index;*/
+    });
+
+    function playIndex (i) {
+      if (i >= queue.length) {
+        return;
+      }
+
+      index = i;
+
+      source.src = URL.createObjectURL(queue[i].blob);
+      player.load();
+      player.play();
+
+      queueDisplay();
+    }
+
+    function queueAdd () {
+      if (queue.length > 12 && !window.localStorage.ramSize) {
+        if (!confirm('IMPORTANT: (This message shows only once when dismissed)\nWhen you add songs to your playlist, they will be copied into your RAM.\nThis means that adding more songs may actually too much for your PC to handle.\nYou should check this with your task-manager right now.\n\nDo you want to add this song to your playlist?')) {
+          return;
+        }
+        window.localStorage.ramSize = true;
+      }
+
+      jsmediatags.read(selector.files[0], {
+        onSuccess: function (tag) {
+          var info = tag.tags;
+
+          var picture = '';
+          for (var i = 0; i < info.picture.data.length; i++) {
+            picture += String.fromCharCode(info.picture.data[i]);
+          }
+          picture = 'data:' + info.picture.format + ';base64,' + window.btoa(picture);
+
+          queue.push({
+            artist: info.artist,
+            title: info.title,
+            album: info.album,
+            picture: picture,
+            year: info.year,
+            blob: selector.files[0]
+          });
+          queueDisplay();
+
+          if (queue.length === 1) playIndex(0);
+
+          selector.value = '';
+        },
+        onError: function (error) {
+          queue.push({
+            artist: 'Unknown',
+            title: 'Unknown',
+            album: 'Unknown',
+            year: '?',
+            picture: "data:image/jpeg;base64,",
+            blob: selector.files[0]
+          });
+
+          queueDisplay();
+
+          if (queue.length === 1) playIndex(0);
+
+          selector.value = '';
+        }
+      });
+    }
+
+    function removeQueue (i) {
+      if (i >= queue.length) return;
+
+      if (i === index) queueNext();
+
+      queue.splice(i, 1);
+
+      queueDisplay();
+    }
+
+    function queueNext() {
+      URL.revokeObjectURL(source.src);
+
+      if (index >= queue.length - 1) {
+        player.pause();
+        URL.revokeObjectURL(source.src);
+        return;
+      }
+
+      playIndex(index + 1);
+    }
+
+    function queuePrev () {
+      URL.revokeObjectURL(source.src);
+
+      if (index < 1) {
+        player.pause();
+        source.src = "blank";
+        return;
+      }
+
+      playIndex(index - 1);
+    }
+
+    function queueDisplay () {
+      var html = '';
+
+      for (var i in queue) {
+        html +=  (parseInt(i, 10) + 1) + ' <a href="javascript:removeQueue(' + i + ')"><span class="icon ion-close-round"></span></a> <a href="javascript:playIndex(' + i + ')"><span class="icon ion-play"></span></a> ';
+        if (i == index) html += '<b>';
+        html += '<i>' + queue[i].artist + '</i> - ' + queue[i].title + '</b><br>';
+      }
+
+      queueDiv.innerHTML = html;
+
+      barDisplay();
+    }
+
+    function queueDelete () {
+      queue = [];
+      //if (window.localStorage.playlist) delete window.localStorage.playlist;
+      index = 0;
+      //if (window.localStorage.index) delete window.localStorage.index;
+
+      source.src = 'blank';
+
+      queueNext();
+      queueDisplay();
+    }
+
+    function barDisplay () {
+      if (!queue[index]) return info.innerHTML = "";
+
+      var html = '<img class="player-bar-info-img" src="' + queue[index].picture + '"><div class="player-bar-info-top">' + queue[index].artist + ' - ' + queue[index].album + ' (' + queue[index].year + ')</div><div class="player-bar-info-bottom">' + queue[index].title + '</div>';
+
+      info.innerHTML = html;
+    }
+
+    function barProgress () {
+      if (!queue[index]) progressbar.style.width = '0%';
+
+      progressbar.style.width = (player.currentTime/player.duration) * 100 + '%';
+
+      if (player.paused) {
+        statusbutton.className = 'icon ion-play';
+      } else {
+        statusbutton.className = 'icon ion-pause';
+      }
+    }
+
+    function askDeleteQueue () {
+      if (confirm('Delete entire queue?')) queueDelete();
+    }
+
+    function queueToggle () {
+      if (player.paused) {
+        player.play();
+      } else {
+        player.pause();
+      }
+    }
+
+    selector.oninput = function () {
+      queueAdd();
+    }
+
+    player.onended = function () {
+      setTimeout(function () {
+        queueNext();
+      }, 1000);
+    };
+
+    player.onvolumechange = function () {
+      window.localStorage.volume = player.volume;
+
+      volumemeter.style.height = (60 * player.volume) + 'px';
+    };
+
+    volumemeter.parentNode.onclick = function (event) {
+      player.volume = (window.innerHeight - event.clientY) / 60;
+    }
+
+    window.setInterval(function () {
+      barProgress();
+    }, 100);
+
+    progresswrap.onclick = function (event) {
+      var percentage = event.clientX / $(progresswrap).width();
+
+      player.currentTime = percentage * player.duration;
+
+      player.play();
+    };
+
+    $('#player_info > .player-bar-img').onclick = function () {
+
+    };
+
+    function pullUpdate () {
+      $.get('http://localhost:3001', function (data) {
+        if (data.play === player.paused) {
+          if (data.play === false) {
+            player.pause();
+          } else {
+            player.play();
+          }
+        }
+      });
+    }
+
+    window.setInterval(function () {
+      if (!ingame.checked) return;
+
+      pullUpdate();
+    }, 1000);
+
+    window.onbeforeunload = function () {
+      //window.localStorage.playlist = JSON.stringify(queue);
+      //window.localStorage.index = index;
+    };
+  </script>
+</html>
