@@ -4,7 +4,7 @@ Musicsync is a browser-based music player that will connect to CSGO and only pla
 # Installation
 - Download the current version with bundled dependencies from https://github.com/BlackCetha/csgo-musicsync/releases
 - Place `gamestate_integration_music.cfg` in your SteamApps\common\Counter-Strike: Global Offensive\csgo\cfg folder
-- Install [https://nodejs.org/en/](NodeJS) if you haven't already and run `index.js`
+- Install [NodeJS](https://nodejs.org/en/) if you haven't already and run `index.js`
 - Open `mediaplayer.html` in your browser
 
 # Running
