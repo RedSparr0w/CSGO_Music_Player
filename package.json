@@ -1,0 +1,14 @@
+{
+  "name":"CSGO_Music_Player",
+  "version":"2.0.0",
+  "dependencies":{
+    "electron":"^1.4.13",
+    "id3-parser":"^1.1.1"
+  },
+  "scripts":{
+    "preinstall":"npm install electron-packager -g",
+    "test":"./node_modules/.bin/electron .",
+    "start":"electron-packager ./ \"CS:GO Music Player\" --platform=win32 --arch=ia32 --icon=./logo.ico --overwrite"
+  },
+  "main":"main.js"
+}

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="theme-color" content="#2196f3">
+    <title>CS:GO Music Player</title>
+    <link rel="stylesheet" href="./include/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./include/css/framework7.material.min.css">
+    <link rel="stylesheet" href="./app.css">
+    <link rel="stylesheet" href="./include/css/framework7.material.colors.min.css">
+    <link href="http://fonts.googleapis.com/css?family=Roboto:400,300,500,700" rel="stylesheet" type="text/css">
+  </head>
+  <body class="theme-white">
+    <script>
+      document.addEventListener("keydown", function (e) {
+        if (e.which === 123) {
+          require('electron').remote.getCurrentWindow().toggleDevTools();
+        } else if (e.which === 116) {
+          location.reload();
+        }
+      });
+    </script>
+    <div class="statusbar-overlay"></div>
+    <div class="panel-overlay"></div>
+    <div class="panel panel-left panel-cover">
+      <div class="view navbar-fixed">
+        <div class="pages">
+          <div data-page="panel-left" class="page">
+            <div class="navbar">
+              <div class="navbar-inner">
+                <div class="center">Settings</div>
+              </div>
+            </div>
+            <div class="page-content">
+              <div class="list-block">
+                <ul>
+                  <li><a href="#" data-panel="right" class="item-link open-panel">
+                      <div class="item-content">
+                        <div class="item-media"><i class="fa fa-paint-brush" aria-hidden="true"></i></div>
+                        <div class="item-inner">
+                          <div class="item-title">Change Theme</div>
+                        </div>
+                      </div></a></li>
+                  <li>
+                </ul>
+              </div>
+              <div class="content-block-title">Music State When Alive</div>
+              <div class="list-block">
+                <ul>
+                    <label class="label-radio item-content">
+                      <input type="radio" name="play_music_when_alive" value="false">
+                      <div class="item-media"><i class="icon icon-form-radio"></i></div>
+                      <div class="item-inner">
+                        <div class="item-title">Pause</div>
+                      </div>
+                    </label>
+                  </li>
+                  <li>
+                    <label class="label-radio item-content">
+                      <input type="radio" name="play_music_when_alive" value="true" checked="checked">
+                      <div class="item-media"><i class="icon icon-form-radio"></i></div>
+                      <div class="item-inner">
+                        <div class="item-title">Specify Volume</div>
+                      </div>
+                    </label>
+                  </li>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-media"><i class="fa fa-volume-down" aria-hidden="true"></i></div>
+                      <div class="item-inner">
+                        <div class="item-input">
+                          <div class="range-slider">
+                            <input name="alive_volume" type="range" min="0" max="1" value="0.2" step="0.001" class="">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="item-media"><i class="fa fa-volume-up" aria-hidden="true"></i></div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-right panel-reveal">
+      <div class="view view-right">
+        <div class="pages navbar-fixed">
+          <div data-page="panel-right1" class="page">
+            <div class="navbar">
+              <div class="navbar-inner">
+                <div class="center">Theme</div>
+                <div class="right"><a href="#" class="close-panel link icon-only"><i class="fa fa-times" aria-hidden="true"></i></a></div>
+              </div>
+            </div>
+            <div class="page-content">
+              <div class="content-block-title">Choose Layout Theme</div>
+              <div class="content-block">
+                <div class="row">
+                  <div data-theme="light" data-layout="" class="col-50 layout-theme layout-default active"></div>
+                  <div data-theme="dark" class="col-50 layout-theme layout-dark"></div>
+                </div>
+              </div>
+              <div class="content-block-title">Choose Color Theme</div>
+              <div class="content-block">
+                <div class="row">
+                  <div data-theme="red" class="col-20 color-theme bg-red"></div>
+                  <div data-theme="pink" class="col-20 color-theme bg-pink"></div>
+                  <div data-theme="purple" class="col-20 color-theme bg-purple"></div>
+                  <div data-theme="deeppurple" class="col-20 color-theme bg-deeppurple"></div>
+                  <div data-theme="indigo" class="col-20 color-theme bg-indigo"></div>
+                </div>
+                <div class="row">
+                  <div data-theme="blue" class="col-20 color-theme bg-blue"></div>
+                  <div data-theme="lightblue" class="col-20 color-theme bg-lightblue"></div>
+                  <div data-theme="cyan" class="col-20 color-theme bg-cyan"></div>
+                  <div data-theme="teal" class="col-20 color-theme bg-teal"></div>
+                  <div data-theme="green" class="col-20 color-theme bg-green"></div>
+                </div>
+                <div class="row">
+                  <div data-theme="lightgreen" class="col-20 color-theme bg-lightgreen"></div>
+                  <div data-theme="lime" class="col-20 color-theme bg-lime"></div>
+                  <div data-theme="yellow" class="col-20 color-theme bg-yellow"></div>
+                  <div data-theme="amber" class="col-20 color-theme bg-amber"></div>
+                  <div data-theme="orange" class="col-20 color-theme bg-orange"></div>
+                </div>
+                <div class="row">
+                  <div data-theme="deeporange" class="col-20 color-theme bg-deeporange"></div>
+                  <div data-theme="brown" class="col-20 color-theme bg-brown"></div>
+                  <div data-theme="gray" class="col-20 color-theme bg-gray"></div>
+                  <div data-theme="bluegray" class="col-20 color-theme bg-bluegray"></div>
+                  <div data-theme="black" class="col-20 color-theme bg-black"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="views">
+      <div class="view view-main">
+        <div class="pages navbar-fixed">
+          <div data-page="index" class="page">
+            <div class="navbar">
+              <div class="navbar-inner">
+                <div class="left"><a href="#" class="open-panel link icon-only"><i class="fa fa-cog" aria-hidden="true"></i></a></a></div>
+                <div class="center">CS:GO Music Player</div>
+                <div class="right"><a href="#" onclick="window.close();" class="link icon-only"><i class="fa fa-times" aria-hidden="true"></i></a></div>
+              </div>
+            </div>
+            <div class="page-content">
+              <audio preload="none" id="player"><source src="nofilesloaded" type="audio/mp3"></audio>
+              <div class="list-block media-list">
+                <ul id="playlist">
+                </ul>
+              </div>
+            </div>
+            <div id="master_volume">
+              <div class="list-block">
+                <ul>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-media"><i class="fa fa-volume-down" aria-hidden="true"></i></div>
+                      <div class="item-inner">
+                        <div class="item-input">
+                          <div class="range-slider">
+                            <input name="master_volume" type="range" min="0" max="1" value="0.8" step="0.001" oninput="player.volume=this.value;">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="item-media"><i class="fa fa-volume-up" aria-hidden="true"></i></div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="toolbar toolbar-bottom">
+              <div class="toolbar-inner">
+                <a href="#" class="link" onclick="queuePrev();"><i class="fa fa-step-backward" aria-hidden="true"></i></a>
+                <a href="#" class="link" onclick="togglePlayer();" id="togglePlayer"><i class="fa fa-play" aria-hidden="true"></i></a>
+                <a href="#" class="link" onclick="queueNext();"><i class="fa fa-step-forward" aria-hidden="true"></i></a>
+                <a href="#" class="link" onclick="toggleShuffle();" id="toggleShuffle"><i class="fa fa-retweet" aria-hidden="true"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+    
+    <script type="text/javascript" src="./include/js/framework7.min.js"></script>
+    <script type="text/javascript" src="./include/js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="./include/js/gamestate.js"></script>
+    <script type="text/javascript" src="./include/js/player.js"></script>
+    <script type="text/javascript" src="./app.js"></script>
+    
+    <script>if (window.module) module = window.module;</script>
+  </body>
+</html>
