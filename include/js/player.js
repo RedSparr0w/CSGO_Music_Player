@@ -212,18 +212,29 @@ function queuePrev() {
 
 function queueDisplay () {
   var html = '';
-
-  for (var i in playlist) {
-    html += `<li>
-              <a href="#" class="item-link item-content" data-index="${i}" onclick="playIndex(this.dataset.index);" oncontextmenu="removeQueue(this.dataset.index)">
-                <div class="item-inner">
-                  <div class="item-title-row">
-                    <div class="item-title">${playlist[i].title}</div>
+  if (!playlist.length){
+    html += `<div class="drop_zone" style="margin-left: 10vw;width: 80vw;text-align: center;">
+        <div style="display: table-cell;vertical-align: middle;border: 5px dotted;border-radius:15px;height: calc(100vh - 226px);width: 100vw;">
+          <p>
+            Drag &amp; Drop<br/>Your Music Here
+            <br>
+            <i class="fa fa-4x fa-music"></i>
+          </p>
+        </div>
+      </div>`;
+  }else{
+    for (var i in playlist) {
+      html += `<li>
+                <a href="#" class="item-link item-content" data-index="${i}" onclick="playIndex(this.dataset.index);" oncontextmenu="removeQueue(this.dataset.index)">
+                  <div class="item-inner">
+                    <div class="item-title-row">
+                      <div class="item-title">${playlist[i].title}</div>
+                    </div>
+                    <div class="item-subtitle">${playlist[i].artist}</div>
                   </div>
-                  <div class="item-subtitle">${playlist[i].artist}</div>
-                </div>
-              </a>
-            </li>`;
+                </a>
+              </li>`;
+    }
   }
 
   playlistDiv.innerHTML = html;

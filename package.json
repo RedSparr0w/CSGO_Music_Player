@@ -1,6 +1,6 @@
 {
   "name":"CSGO_Music_Player",
-  "version":"2.0.0",
+  "version":"2.0.1",
   "dependencies":{
     "electron":"^1.4.13",
     "id3-parser":"^1.1.1"

@@ -23,7 +23,7 @@ CS:GO Music Player is a node/browser-based music player that will connect to CSG
 
 # To-do
 - [x] Make to-do list
-- [ ] Add "Dropzone" when playlist empty
+- [x] Add "Dropzone" when playlist empty
 - [ ] Add "Clear Playlist" button
 - [ ] Add ability to move playlist items up/down
 - [ ] Add ability to randomize playlist order
