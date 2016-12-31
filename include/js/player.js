@@ -4,6 +4,7 @@ const id3 = require('id3-parser');
 const fs = require('fs');
 const ipc = require('electron').ipcRenderer; //required for global shortcut keys
 ipc.on('queueNext', queueNext);
+ipc.on('togglePlayer', togglePlayer);
 
 let settings = localStorage.settings ? JSON.parse(localStorage.settings) : {
   "theme" : "dark",

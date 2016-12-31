@@ -21,6 +21,10 @@ CS:GO Music Player is a node/browser-based music player that will connect to CSG
 - Click the bottom right icon to toggle shuffle mode.
 - To Change the theme, click the "Cog" icon up the top left then click "change theme".
 
+# Global Shortcut Keys
+- `ALT + N` Next Song
+- `ALT + M` Start or Stop player
+
 # To-do
 - [x] Make to-do list
 - [x] Add "Dropzone" when playlist empty

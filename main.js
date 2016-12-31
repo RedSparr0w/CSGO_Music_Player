@@ -12,8 +12,11 @@ app.on('window-all-closed', function() {
 app.on('ready', function() {
   // Create the browser window.
   mainWindow = new BrowserWindow({title: 'CS:GO Music Player', icon: 'logo.ico', width: 400, height: 700, maxWidth: 400, minWidth: 400, frame: false});
-  const ret = globalShortcut.register('ALT+N', () => {
+  const next = globalShortcut.register('ALT+N', () => {
     mainWindow.webContents.send('queueNext');
+  })
+  const startStop = globalShortcut.register('ALT+M', () => {
+    mainWindow.webContents.send('togglePlayer');
   })
   // and load the index.html of the app.
   mainWindow.loadURL('file://' + __dirname + '/index.html');
