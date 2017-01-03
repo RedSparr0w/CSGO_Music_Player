@@ -1,5 +1,11 @@
 # CS:GO Music Player
+<img src="http://i.imgur.com/FKWEeSc.png" width="100%">
+
 CS:GO Music Player is a node/browser-based music player that will connect to CSGO and only play music when you don't need sound!
+
+Settings | Empty Playlist | Theme Changer
+:---: | :---: | :---:
+![](https://i.imgur.com/rwtTsTj.png) | ![](https://i.imgur.com/8aGOfdr.png) | ![](https://i.imgur.com/fhgAJ6A.png)
 
 # Installation
 - Place `gamestate_integration_music.cfg` in your `SteamApps\common\Counter-Strike: Global Offensive\csgo\cfg` folder
@@ -41,3 +47,4 @@ CS:GO Music Player is a node/browser-based music player that will connect to CSG
 
 # Credits
 - Originally forked from [BlackCetha/csgo-musicsync](https://github.com/BlackCetha/csgo-musicsync)
+- Theme | [Framework7](http://framework7.io/)
