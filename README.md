@@ -34,6 +34,7 @@ Settings | Empty Playlist | Theme Changer
 # To-do
 - [x] Make to-do list
 - [x] Add "Dropzone" when playlist empty
+- [ ] Add setting to "Delay Music on Death" (make listening for footsteps easier)
 - [ ] Add "Clear Playlist" button
 - [ ] Add ability to move playlist items up/down
 - [ ] Add ability to randomize playlist order
