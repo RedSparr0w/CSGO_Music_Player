@@ -83,6 +83,41 @@
                   </li>
                 </ul>
               </div>
+              <div class="content-block-title">Delay Music Before Playing</div>
+              <div class="list-block">
+                <ul>
+                    <label class="label-radio item-content">
+                      <input type="radio" name="delay_music_on_death" value="false" checked="checked">
+                      <div class="item-media"><i class="icon icon-form-radio"></i></div>
+                      <div class="item-inner">
+                        <div class="item-title">Default (None)</div>
+                      </div>
+                    </label>
+                  </li>
+                  <li>
+                    <label class="label-radio item-content">
+                      <input type="radio" name="delay_music_on_death" value="true">
+                      <div class="item-media"><i class="icon icon-form-radio"></i></div>
+                      <div class="item-inner">
+                        <div class="item-title">Custom Delay (0-4s)</div>
+                      </div>
+                    </label>
+                  </li>
+                  <li>
+                    <div class="item-content">
+                      <div class="item-media"><i class="fa fa-clock-o" aria-hidden="true"></i></div>
+                      <div class="item-inner">
+                        <div class="item-input">
+                          <div class="range-slider">
+                            <input id="delay_slider" name="delay_amount" type="range" min="0" max="4" value="1.5" step="0.5" class="">
+                          </div>
+                        </div>
+                      </div>
+                      <div class="item-media"><i class="fa fa-clock-o fa-lg" aria-hidden="true"></i></div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>

@@ -11,7 +11,9 @@ let settings = localStorage.settings ? JSON.parse(localStorage.settings) : {
   "theme_color" : "red",
   "play_music_when_alive" : "false",
   "alive_volume" : 0.1,
-  "master_volume" : 0.8
+  "master_volume" : 0.8,
+  "delay_music_on_death" : "false",
+  "delay_amount" : 1.5
 };
 
 let playlist = localStorage.playlist ? JSON.parse(localStorage.playlist) : [];
@@ -248,13 +250,15 @@ function pullUpdate () {
   if (shouldPlay === false) {
     if (!JSON.parse(settings.play_music_when_alive)){
       player.pause();
-    }else{
-      player.play();
-      player.volume = settings.alive_volume;
+    } else {
+	    player.play();
+	    player.volume = settings.alive_volume;
     }
   } else {
-    player.play();
-    player.volume = settings.master_volume;
+    player.setTimeOut(function (){
+      player.play();
+      player.volume = settings.master_volume;
+    }, settings.delay_amount*1000);
   }
 }
 
