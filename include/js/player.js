@@ -9,12 +9,19 @@ ipc.on('togglePlayer', togglePlayer);
 let settings = localStorage.settings ? JSON.parse(localStorage.settings) : {
   "theme" : "dark",
   "theme_color" : "red",
-  "play_music_when_alive" : "false",
+  "play_music_when_alive" : false,
   "alive_volume" : 0.1,
   "master_volume" : 0.8,
-  "delay_music_on_death" : "false",
-  "delay_amount" : 1.5
+  "delay_music_amount" : 1500
 };
+
+$.each(settings,function(key,val){
+  try{
+    settings[key] = JSON.parse(val);
+  }catch(e){
+    settings[key] = val;
+  }
+});
 
 let playlist = localStorage.playlist ? JSON.parse(localStorage.playlist) : [];
 
@@ -45,7 +52,7 @@ classList.add('layout-' + settings.theme);
 
 // Radios
 $('input:radio').each(function(){
-  if(this.value == settings[this.name]){
+  if(this.value == settings[this.name].toString()){
     this.checked = true;
   }else{
     this.checked = false;
@@ -248,17 +255,20 @@ function queueDisplay () {
 
 function pullUpdate () {
   if (shouldPlay === false) {
-    if (!JSON.parse(settings.play_music_when_alive)){
+    if (!settings.play_music_when_alive){
       player.pause();
     } else {
 	    player.play();
 	    player.volume = settings.alive_volume;
     }
   } else {
+    // Delay Music on Death (listen to footsteps)
     player.setTimeOut(function (){
-      player.play();
-      player.volume = settings.master_volume;
-    }, settings.delay_amount*1000);
+      if(!!shouldPlay){
+        player.play();
+        player.volume = settings.master_volume;
+      }
+    }, settings.delay_music_amount);
   }
 }
 
