@@ -263,7 +263,7 @@ function pullUpdate () {
     }
   } else {
     // Delay Music on Death (listen to footsteps)
-    player.setTimeOut(function (){
+    setTimeout(function (){
       if(!!shouldPlay){
         player.play();
         player.volume = settings.master_volume;
