@@ -1,5 +1,6 @@
 'use strict';
 
+const version = require('electron').remote.app.getVersion();
 const id3 = require('id3-parser');
 const fs = require('fs');
 const ipc = require('electron').ipcRenderer; //required for global shortcut keys
@@ -7,13 +8,20 @@ ipc.on('queueNext', queueNext);
 ipc.on('togglePlayer', togglePlayer);
 
 let settings = localStorage.settings ? JSON.parse(localStorage.settings) : {
+  version,
   "theme" : "dark",
   "theme_color" : "red",
   "play_music_when_alive" : false,
   "alive_volume" : 0.1,
   "master_volume" : 0.8,
-  "delay_music_amount" : 1500
+  "delay_music_amount" : 1500,
+  "show_notifications" : 1
 };
+
+if (!settings.version){
+  updateSetting('version',version);
+  updateSetting('show_notifications',1);
+}
 
 $.each(settings,function(key,val){
   try{
@@ -32,6 +40,7 @@ var enablePlay = false;
 var shuffle = false;
 var checkPlayerState;
 var index = shuffle ? Math.floor(Math.random() * playlist.length): 0;
+var closeNotification;
 
 $(document).ready(function () {
   queueDisplay();
@@ -94,8 +103,23 @@ document.body.ondrop = (ev) => {
   });
 }
 
+function notify(title,body,icon) {
+  icon = icon || 'logo.ico';
+  var options = {
+      body,
+      icon,
+      silent: true
+  }
+  return new Notification(title,options);
+}
+let noti = {close:function(){}};
+
 function updateSetting(obj,val){
-  settings[obj] = val;
+  try {
+    settings[obj] = JSON.parse(val);
+  }catch(e){
+    settings[obj] = val;
+  }
   localStorage.settings = JSON.stringify(settings);
 }
 
@@ -140,6 +164,15 @@ function playIndex(i) {
   $('#playlist li').eq(index).addClass('playing').parents('.page-content').animate({ scrollTop: ($('.playing').position() ? $('.playing').position().top : -20) + 20 }, 600);
   source.src = playlist[i].path;
   player.load();
+  if (settings.show_notifications >= 1){
+    if(settings.show_notifications === 2 || settings.show_notifications === 1 && !!shouldPlay){
+      clearTimeout(closeNotification);
+      noti.close();
+      noti = notify(playlist[i].title,playlist[i].artist);
+      closeNotification = setTimeout(function() { noti.close() }, 2500);
+    }
+  }
+  
 }
 playIndex(index);
 
@@ -200,8 +233,8 @@ function queueNext() {
   URL.revokeObjectURL(source.src);
 
   if (index >= playlist.length - 1) {
-  index = 0;
-  playIndex(index);
+    index = 0;
+    playIndex(index);
     return;
   }
 
@@ -212,8 +245,8 @@ function queuePrev() {
   URL.revokeObjectURL(source.src);
 
   if (index < 1) {
-  index = playlist.length - 1
-  playIndex(index);
+    index = playlist.length - 1
+    playIndex(index);
     return;
   }
 
@@ -254,7 +287,7 @@ function queueDisplay () {
 }
 
 function pullUpdate () {
-  if (shouldPlay === false) {
+  if (!shouldPlay) {
     if (!settings.play_music_when_alive){
       player.pause();
     } else {
@@ -264,7 +297,7 @@ function pullUpdate () {
   } else {
     // Delay Music on Death (listen to footsteps)
     setTimeout(function (){
-      if(!!shouldPlay){
+      if(!!shouldPlay && !!enablePlay){
         player.play();
         player.volume = settings.master_volume;
       }
