@@ -37,9 +37,8 @@ var player = $('#player')[0];
 var source = $('#player > source')[0];
 var playlistDiv = $('#playlist')[0];
 var enablePlay = false;
-var shuffle = false;
 var checkPlayerState;
-var index = shuffle ? Math.floor(Math.random() * playlist.length): 0;
+var index = 0;
 var closeNotification;
 
 $(document).ready(function () {
@@ -145,13 +144,10 @@ function togglePlayer(){
 }
 
 function toggleShuffle(){
-  if (!shuffle){
-    shuffle = true;
-    $('#toggleShuffle').html('<i class="fa fa-random" aria-hidden="true"></i>');
-  }else{
-    shuffle = false;
-    $('#toggleShuffle').html('<i class="fa fa-retweet" aria-hidden="true"></i>');
-  }
+  playlist = playlist.map((a) => [Math.random(),a]).sort((a,b) => a[0]-b[0]).map((a) => a[1]);
+  queueDisplay();
+  index = 0;
+  playIndex(index);
 }
 
 function playIndex(i) {
@@ -176,7 +172,7 @@ function playIndex(i) {
 }
 playIndex(index);
 
-function queueAdd () {
+function queueAdd() {
   jsmediatags.read(selector.files[0], {
     onSuccess: function (tag) {
       var info = tag.tags;
@@ -220,7 +216,7 @@ function queueAdd () {
   });
 }
 
-function removeQueue (i) {
+function removeQueue(i) {
   if (i >= playlist.length) return;
 
   if (i == index) queueNext();
@@ -238,7 +234,7 @@ function queueNext() {
     return;
   }
 
-  playIndex(shuffle ? Math.floor(Math.random() * playlist.length): ++index);
+  playIndex(++index);
 }
 
 function queuePrev() {
@@ -250,7 +246,7 @@ function queuePrev() {
     return;
   }
 
-  playIndex(shuffle ? Math.floor(Math.random() * playlist.length): --index);
+  playIndex(--index);
 }
 
 function queueDisplay () {
