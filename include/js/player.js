@@ -1,9 +1,11 @@
 'use strict';
 
-const version = require('electron').remote.app.getVersion();
-const id3 = require('id3-parser');
-const fs = require('fs');
-const ipc = require('electron').ipcRenderer; //required for global shortcut keys
+const version = require('electron').remote.app.getVersion(),
+      id3 = require('id3-parser'),
+      fs = require('fs'),
+      path = require('path'),
+      glob = require('glob'),
+      ipc = require('electron').ipcRenderer; //required for global shortcut keys
 ipc.on('queueNext', queueNext);
 ipc.on('togglePlayer', togglePlayer);
 
@@ -33,9 +35,9 @@ $.each(settings,function(key,val){
 
 let playlist = localStorage.playlist ? JSON.parse(localStorage.playlist) : [];
 
-var player = $('#player')[0];
-var source = $('#player > source')[0];
-var playlistDiv = $('#playlist')[0];
+const player = document.getElementById('player'),
+      source = $('#player > source')[0],
+      playlistDiv = document.getElementById('playlist');
 var enablePlay = false;
 var checkPlayerState;
 var index = 0;
@@ -74,6 +76,19 @@ $('input').not(':radio,:checkbox').each(function(){
 
 /********************/
 
+function addToPlaylist(filePath){
+  let tags = id3.parse(new Uint8Array(fs.readFileSync(filePath)));
+  if (!tags) return false;
+  //console.info(tags);
+  playlist.push({
+    'title': tags.title ? tags.title : path.basename(filePath),
+    'artist': tags.artist ? tags.artist : 'unknown',
+    'path': filePath
+  });
+  console.info(`Added ${tags.title ? tags.title : file} to playlist`);
+  return true;
+}
+
 // Drag and drop music
 document.ondragover = document.ondrop = (ev) => {
   ev.preventDefault();
@@ -83,23 +98,20 @@ document.body.ondrop = (ev) => {
   ev.preventDefault();
   var total = ev.dataTransfer.files.length + playlist.length;
   Array.from(ev.dataTransfer.files).forEach(function(file){
-    id3.parse(new Uint8Array(fs.readFileSync(file.path))).then(tags => {
-      //console.info(tags);
-      playlist.push({
-        'title':tags.title ? tags.title : file.name,
-        'artist':tags.artist ? tags.artist : 'unknown',
-        'path':file.path
+    if (fs.lstatSync(file.path).isDirectory()){
+      const files = glob.sync("C:\\Users\\Dan\\Music\\iTunes\\iTunes Media\\Music" + "/**/*.mp3");
+      files.forEach((file)=>{
+        addToPlaylist(file);
       });
-      if (playlist.length == total){
-        queueDisplay();
-        localStorage.playlist = JSON.stringify(playlist);
-      }
-      if (source.src.indexOf('nofilesloaded')>=0){
-        playIndex(index);
-      }
-    });
-    console.info(`Added ${file.name} to playlist`);
+    } else {
+      addToPlaylist(file.path);
+    }
   });
+  queueDisplay();
+  localStorage.playlist = JSON.stringify(playlist);
+  if (source.src.indexOf('nofilesloaded')>=0){
+    playIndex(index);
+  }
 }
 
 function notify(title,body,icon) {
@@ -168,7 +180,7 @@ function playIndex(i) {
       closeNotification = setTimeout(function() { noti.close() }, 2500);
     }
   }
-  
+
 }
 playIndex(index);
 
