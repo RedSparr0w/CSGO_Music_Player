@@ -163,13 +163,15 @@ function toggleShuffle(){
 }
 
 function playIndex(i) {
-  if (i >= playlist.length) {
+  if (!playlist.length){
+    source.src = 'nofilesloaded';
+    player.load();
     return;
   }
 
-  index = i;
+  index = i = i % playlist.length;
   $('.playing').removeClass('playing');
-  $('#playlist li').eq(index).addClass('playing').parents('.page-content').animate({ scrollTop: ($('.playing').position() ? $('.playing').position().top : -20) + 20 }, 600);
+  $('#playlist li').eq(i).addClass('playing').parents('.page-content').animate({ scrollTop: ($('.playing').position() ? $('.playing').position().top : -20) + 20 }, 600);
   source.src = playlist[i].path;
   player.load();
   if (settings.show_notifications >= 1){
@@ -231,33 +233,21 @@ function queueAdd() {
 function removeQueue(i) {
   if (i >= playlist.length) return;
 
-  if (i == index) queueNext();
   playlist.splice(i, 1);
+  console.log('removed', i, index);
+  if (i <= index) --index;
+  if (i == (index + 1)) queueNext();
   $('#playlist li').eq(i).slideUp(400,function(){$(this).remove();queueDisplay();});
   localStorage.playlist = JSON.stringify(playlist);
 }
 
 function queueNext() {
   URL.revokeObjectURL(source.src);
-
-  if (index >= playlist.length - 1) {
-    index = 0;
-    playIndex(index);
-    return;
-  }
-
   playIndex(++index);
 }
 
 function queuePrev() {
   URL.revokeObjectURL(source.src);
-
-  if (index < 1) {
-    index = playlist.length - 1
-    playIndex(index);
-    return;
-  }
-
   playIndex(--index);
 }
 

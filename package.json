@@ -1,6 +1,6 @@
 {
   "name": "CSGO_Music_Player",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "dependencies": {
     "glob": "^7.1.2",
     "id3-parser": "^2.0.0"
