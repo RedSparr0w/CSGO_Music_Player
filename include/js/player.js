@@ -99,7 +99,7 @@ document.body.ondrop = (ev) => {
   var total = ev.dataTransfer.files.length + playlist.length;
   Array.from(ev.dataTransfer.files).forEach(function(file){
     if (fs.lstatSync(file.path).isDirectory()){
-      const files = glob.sync("C:\\Users\\Dan\\Music\\iTunes\\iTunes Media\\Music" + "/**/*.mp3");
+      const files = glob.sync(`${file.path}/**/*.mp3`);
       files.forEach((file)=>{
         addToPlaylist(file);
       });
